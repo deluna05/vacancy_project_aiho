@@ -1,4 +1,5 @@
 import FAQSection from '../components/FAQSection';
+import Link from 'next/link';
 export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center min-h-[70vh] bg-white">
