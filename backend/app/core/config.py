@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
+    # Supabase Configuration
+    SUPABASE_JWT_SECRET: str = "your-supabase-jwt-secret"
+    
     # CORS
     ALLOWED_ORIGINS: list = ["http://localhost:3000"]
     

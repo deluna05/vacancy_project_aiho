@@ -27,7 +27,7 @@ def get_db():
 # Create tables function
 def create_tables():
     """Create all database tables"""
-    # Import all models here when implemented
-    # from app.models import user, job
+    # Import all models
+    from app.models import user, job
     
     Base.metadata.create_all(bind=engine) 

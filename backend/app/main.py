@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+import os
 
-# Import routes (uncomment when you create them)
-# from app.routes import jobs, users, auth
+# Import routes
+from app.routes import users
 
 app = FastAPI(
     title="Job Match API",
@@ -19,10 +21,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers (uncomment when you create them)
-# app.include_router(jobs.router, prefix="/api/v1")
-# app.include_router(users.router, prefix="/api/v1")
-# app.include_router(auth.router, prefix="/api/v1")
+# Create uploads directory if it doesn't exist
+os.makedirs("uploads", exist_ok=True)
+os.makedirs("uploads/resumes", exist_ok=True)
+os.makedirs("uploads/cover_letters", exist_ok=True)
+
+# Mount static files for uploads
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+# Include routers
+app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
 
 @app.get("/")
 async def root():
