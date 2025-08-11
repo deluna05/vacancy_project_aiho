@@ -75,7 +75,12 @@ export default function ProfilePage() {
         });
       } else {
         // If profile doesn't exist, create one
-        await createProfile(session.user);
+        await createProfile({
+          id: session.user.id,
+          email: session.user.email,
+          access_token: session.access_token,
+          user_metadata: session.user.user_metadata
+        });
       }
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -167,7 +172,8 @@ export default function ProfilePage() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch(`http://localhost:8000/api/v1/users/me/${type}`, {
+      const endpoint = type === 'resume' ? 'resume' : 'cover-letter';
+      const response = await fetch(`http://localhost:8000/api/v1/users/me/${endpoint}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session?.access_token}`

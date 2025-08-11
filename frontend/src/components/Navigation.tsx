@@ -3,11 +3,13 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { User } from '@supabase/supabase-js';
+import { useRouter } from 'next/navigation';
 
 export default function Navigation() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = createClientComponentClient();
+  const router = useRouter();
 
   useEffect(() => {
     // Get initial session
@@ -24,14 +26,21 @@ export default function Navigation() {
       async (event, session) => {
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Redirect to home page when user logs out
+        if (event === 'SIGNED_OUT') {
+          router.push('/');
+        }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, [supabase.auth, router]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    router.push('/');
+    router.refresh();
   };
 
   if (loading) {
@@ -63,7 +72,7 @@ export default function Navigation() {
         </h1>
         
         <div className="flex space-x-8">
-          <a href="#" className="text-gray-600 font-medium hover:text-gray-900 transition-colors">Home</a>
+          <Link href="/" className="text-gray-600 font-medium hover:text-gray-900 transition-colors">Home</Link>
           <a href="#" className="text-gray-600 font-medium hover:text-gray-900 transition-colors">Search Jobs</a>
           <a href="#" className="text-gray-600 font-medium hover:text-gray-900 transition-colors">Upload Resume</a>
         </div>
@@ -71,9 +80,7 @@ export default function Navigation() {
         <div className="flex space-x-4 items-center">
           {user ? (
             <>
-              <span className="text-gray-600 text-sm">
-                Welcome, {user.user_metadata?.full_name || user.email}
-              </span>
+            
               <Link 
                 href="/profile" 
                 className="px-4 py-2 text-gray-600 font-medium hover:text-black transition-colors"

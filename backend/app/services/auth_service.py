@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status, Depends, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-import jwt
+from jose import jwt
 from app.core.config import settings
 from app.models.user import User
 from app.services.user_service import UserService
@@ -36,20 +36,20 @@ class AuthService:
                 detail="Invalid token"
             )
     
-    def get_current_user_id(self, credentials: HTTPAuthorizationCredentials = Depends(security)) -> int:
-        """Get current user ID from JWT token"""
+    def get_current_user_id(self, credentials: HTTPAuthorizationCredentials = Depends(security)) -> str:
+        """Get current Supabase auth_id (sub) from JWT token"""
         token = credentials.credentials
         payload = self.verify_supabase_token(token)
         
-        # Extract user ID from token
-        user_id = payload.get("sub")
-        if not user_id:
+        # Extract Supabase auth subject (string)
+        auth_id = payload.get("sub")
+        if not auth_id:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token payload"
             )
         
-        return user_id
+        return auth_id
     
     def get_current_user(self, db: Session, credentials: HTTPAuthorizationCredentials = Depends(security)) -> Optional[User]:
         """Get current user from JWT token"""

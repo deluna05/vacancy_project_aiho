@@ -21,10 +21,10 @@ async def create_user(
 @router.get("/me", response_model=UserResponse)
 async def get_current_user(
     db: Session = Depends(get_db),
-    current_user_id: int = Depends(auth_service.get_current_user_id)
+    current_auth_id: str = Depends(auth_service.get_current_user_id)
 ):
-    """Get current user profile"""
-    user = user_service.get_user_by_id(db, current_user_id)
+    """Get current user profile using Supabase auth_id from JWT"""
+    user = user_service.get_user_by_auth_id(db, current_auth_id)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -50,16 +50,22 @@ async def get_user(
 async def update_current_user(
     user_data: UserUpdate,
     db: Session = Depends(get_db),
-    current_user_id: int = Depends(auth_service.get_current_user_id)
+    current_auth_id: str = Depends(auth_service.get_current_user_id)
 ):
-    """Update current user profile"""
-    return user_service.update_user(db, current_user_id, user_data)
+    """Update current user profile using Supabase auth_id from JWT"""
+    user = user_service.get_user_by_auth_id(db, current_auth_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    return user_service.update_user(db, user.id, user_data)
 
 @router.post("/me/resume")
 async def upload_resume(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    current_user_id: int = Depends(auth_service.get_current_user_id)
+    current_auth_id: str = Depends(auth_service.get_current_user_id)
 ):
     """Upload resume file"""
     # Validate file type
@@ -82,8 +88,14 @@ async def upload_resume(
     # Read file content
     file_content = await file.read()
     
-    # Upload file
-    file_url = user_service.upload_resume(db, current_user_id, file_content, file.filename)
+    # Resolve DB user and upload file
+    user = user_service.get_user_by_auth_id(db, current_auth_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    file_url = user_service.upload_resume(db, user.id, file_content, file.filename)
     
     return {
         "message": "Resume uploaded successfully",
@@ -95,7 +107,7 @@ async def upload_resume(
 async def upload_cover_letter(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    current_user_id: int = Depends(auth_service.get_current_user_id)
+    current_auth_id: str = Depends(auth_service.get_current_user_id)
 ):
     """Upload cover letter file"""
     # Validate file type
@@ -118,8 +130,14 @@ async def upload_cover_letter(
     # Read file content
     file_content = await file.read()
     
-    # Upload file
-    file_url = user_service.upload_cover_letter(db, current_user_id, file_content, file.filename)
+    # Resolve DB user and upload file
+    user = user_service.get_user_by_auth_id(db, current_auth_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    file_url = user_service.upload_cover_letter(db, user.id, file_content, file.filename)
     
     return {
         "message": "Cover letter uploaded successfully",
@@ -130,8 +148,14 @@ async def upload_cover_letter(
 @router.delete("/me")
 async def delete_current_user(
     db: Session = Depends(get_db),
-    current_user_id: int = Depends(auth_service.get_current_user_id)
+    current_auth_id: str = Depends(auth_service.get_current_user_id)
 ):
     """Delete current user (soft delete)"""
-    user_service.delete_user(db, current_user_id)
-    return {"message": "User deleted successfully"} 
+    user = user_service.get_user_by_auth_id(db, current_auth_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    user_service.delete_user(db, user.id)
+    return {"message": "User deleted successfully"}
