@@ -227,7 +227,7 @@ export default function ProfilePage() {
           )}
 
           <form onSubmit={handleSave} className="space-y-8">
-            {/* Basic Information */}
+            
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -240,7 +240,7 @@ export default function ProfilePage() {
                     value={formData.full_name}
                     onChange={(e) => setFormData({...formData, full_name: e.target.value})}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-black"
                   />
                 </div>
                 <div>
@@ -249,9 +249,10 @@ export default function ProfilePage() {
                   </label>
                   <input
                     type="email"
-                    value={profile?.email || ''}
-                    disabled
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500"
+                    value={profile?.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-black"
                   />
                 </div>
                 <div>
@@ -262,7 +263,7 @@ export default function ProfilePage() {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-black"
                   />
                 </div>
                 <div>
@@ -273,7 +274,7 @@ export default function ProfilePage() {
                     type="text"
                     value={formData.location}
                     onChange={(e) => setFormData({...formData, location: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-black"
                   />
                 </div>
               </div>
@@ -292,7 +293,7 @@ export default function ProfilePage() {
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
                     placeholder="e.g., Software Engineer"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-black"
                   />
                 </div>
                 <div>
@@ -303,7 +304,7 @@ export default function ProfilePage() {
                     type="text"
                     value={formData.company}
                     onChange={(e) => setFormData({...formData, company: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-black"
                   />
                 </div>
                 <div>
@@ -315,7 +316,7 @@ export default function ProfilePage() {
                     value={formData.experience_years}
                     onChange={(e) => setFormData({...formData, experience_years: e.target.value})}
                     min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-black"
                   />
                 </div>
               </div>
@@ -331,7 +332,7 @@ export default function ProfilePage() {
                 onChange={(e) => setFormData({...formData, bio: e.target.value})}
                 rows={4}
                 placeholder="Tell us about yourself..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-black"
               />
             </div>
 

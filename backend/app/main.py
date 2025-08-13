@@ -6,6 +6,14 @@ import os
 # Import routes
 from app.routes import users
 
+from app import models
+from app.database import Base, engine
+Base.metadata.create_all(bind=engine)
+
+
+from app.core.database import create_tables
+create_tables()
+
 app = FastAPI(
     title="Job Match API",
     description="A FastAPI backend for the Job Match application",
